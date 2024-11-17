@@ -3,55 +3,16 @@ import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ImageBackgr
 import { login } from "../scripts/login";
 import Backgroud from "../assets/images/background.jpg";
 import Logo from "../assets/images/logo.png";
-import { Stack, useNavigation } from "expo-router";
+import { Link, Stack, router, useNavigation } from "expo-router";
 const Dashboard = () => {
-  const [state, setState] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [errorMessage, setErrorMessage] = useState("");
-  const navigation = useNavigation();
-
-  const onPressLogin = async () => {
-    setErrors({
-      email: "",
-      password: "",
-    });
-    setErrorMessage("");
-    const payload = {
-      email: state.email,
-      password: state.password,
-    };
-    const response = await login(payload);
-    if (response.status === 200) {
-      console.log(response);
-      navigation.navigate;
-    } else if (response.status === 422) {
-      if (response.data?.errors?.email) {
-        setErrors((prev) => ({ ...prev, email: response.data.errors.email }));
-      }
-      if (response.data?.errors?.password) {
-        setErrors((prev) => ({ ...prev, password: response.data.errors.password }));
-      }
-    } else {
-      setErrorMessage(response.data.message);
-    }
-  };
-
-  const onPressForgotPassword = () => {
-    // Handle forgot password
-  };
-
   return (
     <ImageBackground source={Backgroud} style={styles.background} resizeMode="cover">
       <Image source={Logo} style={styles.logo} />
-      Hi
+      <View style={styles.container}>
+        <View style={styles.card}>
+          <Text style={styles.title}>Hi, Welcome to Dashboard</Text>
+        </View>
+      </View>
     </ImageBackground>
   );
 };
@@ -86,59 +47,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 5,
   },
-  form: {
-    width: "100%",
-    padding: 10,
-  },
+
   title: {
     fontWeight: "bold",
     fontSize: 20,
     color: "#333",
     marginBottom: 20,
     marginHorizontal: "auto",
-  },
-  inputLabel: {
-    fontSize: 14,
-    color: "#000000",
-    marginBottom: 5,
-  },
-  inputView: {
-    width: "100%",
-    backgroundColor: "white",
-    borderRadius: 4,
-    height: 40,
-    marginBottom: 10,
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#D3D3D3",
-  },
-  inputText: {
-    height: 40,
-    color: "#000",
-    paddingLeft: 10,
-  },
-  errorMessage: {
-    height: 40,
-    color: "#db0606",
-  },
-  bottomContainer: {
-    alignItems: "flex-start",
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    width: "100%",
-  },
-  forgotAndSignUpText: {
-    color: "#007BFF",
-    fontSize: 14,
-  },
-  loginBtn: {
-    width: "100%",
-    backgroundColor: "#007BFF",
-    borderRadius: 10,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
   },
 });
 

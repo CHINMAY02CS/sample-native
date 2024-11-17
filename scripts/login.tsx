@@ -107,7 +107,7 @@ export const login = async (data) => {
   try {
     const response = await publicApi.post("", data); // URL already provided in baseURL
     if (response.status === 200) {
-      return response.data;
+      return response;
     } else {
       return response.data;
     }

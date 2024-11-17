@@ -3,49 +3,44 @@ import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ImageBackgr
 import { login } from "../scripts/login";
 import Backgroud from "../assets/images/background.jpg";
 import Logo from "../assets/images/logo.png";
-import { Stack, useNavigation } from "expo-router";
+import { router } from "expo-router";
 const App = () => {
-  const [state, setState] = useState({
+  const [form, setForm] = useState({
     email: "",
     password: "",
+    errors: { email: "", password: "" },
+    errorMessage: "",
   });
 
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [errorMessage, setErrorMessage] = useState("");
-  const navigation = useNavigation();
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const onPressLogin = async () => {
-    setErrors({
-      email: "",
-      password: "",
-    });
-    setErrorMessage("");
+    setForm((prev) => ({ ...prev, errors: { ...prev.errors, email: "", password: "" }, errorMessage: "" }));
     const payload = {
-      email: state.email,
-      password: state.password,
+      email: form.email,
+      password: form.password,
     };
     const response = await login(payload);
     if (response.status === 200) {
-      console.log(response);
-      navigation.navigate("/dashboard");
+      router.navigate("./dashboard");
     } else if (response.status === 422) {
       if (response.data?.errors?.email) {
-        setErrors((prev) => ({ ...prev, email: response.data.errors.email }));
+        setForm((prev) => ({ ...prev, errors: { ...prev.errors, email: response.data.errors.email } }));
       }
       if (response.data?.errors?.password) {
-        setErrors((prev) => ({ ...prev, password: response.data.errors.password }));
+        setForm((prev) => ({ ...prev, errors: { ...prev.errors, password: response.data.errors.password } }));
       }
     } else {
-      setErrorMessage(response.data.message);
+      setForm((prev) => ({ ...prev, errorMessage: response.data.message }));
     }
   };
 
   const onPressForgotPassword = () => {
-    // Handle forgot password
+    // Handle forgot password funciton will be added here
   };
 
   return (
@@ -61,10 +56,10 @@ const App = () => {
                 style={styles.inputText}
                 placeholder="Enter Email ID . . ."
                 placeholderTextColor="#476d7e"
-                onChangeText={(text) => setState((prev) => ({ ...prev, email: text }))}
+                onChangeText={(text) => setForm((prev) => ({ ...prev, email: text }))}
               />
             </View>
-            {errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}
+            {form.errors.email && <Text style={styles.errorMessage}>{form.errors.email}</Text>}
             <Text style={styles.inputLabel}>Password</Text>
             <View style={styles.inputView}>
               <TextInput
@@ -72,11 +67,11 @@ const App = () => {
                 secureTextEntry
                 placeholder="Type here . . ."
                 placeholderTextColor="#003f5c"
-                onChangeText={(text) => setState((prev) => ({ ...prev, password: text }))}
+                onChangeText={(text) => setForm((prev) => ({ ...prev, password: text }))}
               />
             </View>
-            {errors.password && <Text style={styles.errorMessage}>{errors.password}</Text>}
-            {errorMessage && <Text style={styles.errorMessage}>{errorMessage}</Text>}
+            {form.errors.password && <Text style={styles.errorMessage}>{form.errors.password}</Text>}
+            {form.errorMessage && <Text style={styles.errorMessage}>{form.errorMessage}</Text>}
           </View>
 
           <View style={styles.bottomContainer}>
